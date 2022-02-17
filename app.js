@@ -1,100 +1,58 @@
-const fs = require('fs');
+const express = require('express');
+const {engine} = require('express-handlebars');
 const path = require('path');
-const replace = require('repl')
+const {check} = require('express-validator');
+const {handle} = require('express/lib/router');
+const queryString = require('querystring');
 
-// fs.mkdir(path.join(__dirname, 'main', 'online'), {recursive: true}, (error) => {
-//     if (error) {
-//         console.log(error);
-//     }
-// })
-//
-// fs.mkdir(path.join(__dirname, 'main', 'inPerson'), (error) => {
-//     if (error) {
-//         console.log(error);
-//     }
-// })
-//
-// fs.writeFile(path.join(__dirname, 'main', 'online', 'online.txt'), 'Some data', (err) => {
-//     if (err) throw err
-// })
-//
-// fs.writeFile(path.join(__dirname, 'main', 'inPerson', 'inPerson.txt'), 'New data', (error) => {
-//     if (error) {
-//         console.log(error)
-//     }
-// })
-//
-// function newContent() {
-//     const onlineUsers = [
-//         {name: "Ivan", age: 22, city: "Lviv"},
-//         {name: "Stepan", age: 28, city: "Lviv"},
-//         {name: "Fedir", age: 32, city: "Lviv"}
-//     ];
-//
-//     for (const user of onlineUsers) {
-//         fs.writeFile(path.join(__dirname, 'main', 'online', `${user.name}.txt`),
-//             `${user.name.toString()} \n${user.age.toString()} \n${user.city.toString()}`,
-//             {flag: 'w'},
-//             (error) => {
-//                 if (error) {
-//                     console.log(error)
-//                 }
-//             })
-//     }
-//
-// }
-//
-// newContent();
+const app = express();
 
-// function inPerson () {
-//     const inPersonUsers = [
-//         {name: "Marta", age: 22, city: "Lviv"},
-//         {name: "Olena", age: 28, city: "Lviv"},
-//         {name: "Maria", age: 32, city: "Lviv"}
-//     ];
-//
-//     for (const user of inPersonUsers) {
-//         fs.writeFile(path.join(__dirname, 'main', 'inPerson', `${user.name}.txt`),
-//             `${user.name.toString()} \n${user.age.toString()} \n${user.city.toString()}`,
-//             {flag: 'w'},
-//             (error) => {
-//                 if (error) {
-//                     console.log(error)
-//                 }
-//             })
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
+app.use(express.static(path.join(__dirname, 'static')));
+app.set('view engine', '.hbs');
+app.engine('.hbs', engine({defaultLayout: false}));
+app.set('views', path.join(__dirname, 'static'));
+
+const users = [
+    {firsName: 'Ivan', lastName: 'Ivanov', age: 34, city: 'Kyiv', email: 'pole@ukr.net', password: 'mweoiur834r'},
+    {firsName: 'Ivan', lastName: 'Ivanov', age: 34, city: 'Lviv', email: 'lis@ukr.net', password: 'mweoiur834r'},
+    {firsName: 'Ivan', lastName: 'Ivanov', age: 34, city: 'Dnipro', email: 'soloma@ukr.net', password: 'mweoiur834r'}
+];
+
+app.get('/login', (req, res) => {
+    res.render('login', {qs: req.query})
+})
+
+app.get('/users', (req, res) => {
+    res.render('users', {users})
+});
+
+// app.post('/login', check('email').custom(value => {
+//         return users.map(user => user).find(email => {
+//             if (email === value) {
+//                 console.log('Error')
+//             }
+//         })
+//     }),
+//     (req, res) => {
+//         users.push(req.body)
+//         res.redirect('/users')
 //     }
-//
-// }
-//
-// inPerson();
-//
+// )
 
-function replaceContent() {
-    fs.readdir(path.join(__dirname, 'main', 'online'), (error, files) => {
-        for (const file of files) {
-            if (!file.includes('new_')) {
-                fs.rename(path.join(__dirname, 'main', 'online', file), path.join(__dirname, 'main', 'inPerson', `new_${file}`),
-                    (err) => {
-                        if (err) {
-                            console.log(err);
-                        }
-                    })
-            }
-        }
-    })
-    fs.readdir(path.join(__dirname, 'main', 'inPerson'), (error, items) => {
-        for (const item of items) {
-            if (!item.includes('repl_')) {
-                fs.rename(path.join(__dirname, 'main', 'inPerson', item), path.join(__dirname, 'main', 'online', `repl_${item}`),
-                    (err) => {
-                        if (err) {
-                            console.log(err);
-                        }
-                    })
-            }
-        }
-    })
-}
+// app.get('/users/:id', (req, res) => {
+//     const {id} = req.params;
+//     const {city} = req.query
+//     res.json(users[id]);
+// });
 
-replaceContent();
+app.use((req, res) => {
+    res.render('pageNotFound')
+})
+
+app.listen(5000, () => {
+    console.log('Server is working!');
+});
 
