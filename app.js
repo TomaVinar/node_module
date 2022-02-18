@@ -75,7 +75,7 @@ app.get('/users', ({query}, res) => {
 });
 
 app.get('/users/:id', (req, res) => {
-    const {id} = req.params
+    const {id} = req.params;
     const userId = users.find(value => value.id === +req.params.id);
     if (!userId) {
         error = 'User is not found';
