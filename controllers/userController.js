@@ -4,7 +4,7 @@ class UserController {
     getCurrentUser(req, res) {
         const {id} = req.params;
         const currentUser = users.find(value => value.id === req.body.id);
-        res.render('users/:id', {currentUser});
+        res.redirect('/user', {currentUser});
     }
 }
 

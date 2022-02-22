@@ -5,13 +5,12 @@ function isUserAlreadyExist(req, res, next) {
     const user = users.find(value => value.email === req.body.email);
 
     try {
-        if (user) {
-            throw new Error('Users with this email is already exist');
+        if (!user) {
+            throw new Error('User with this email is not exist');
         }
-
-        req.user = user;
-        res.redirect(`/users${user.id}`, {user});
-
+        if (user) {
+            res.redirect(`/users/${user.id}`, {user});
+        }
         next();
 
     } catch ({message}) {

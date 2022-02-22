@@ -21,7 +21,7 @@ class UsersController {
             if (!user) {
                 throw new Error(`User with this ${req.params.id} does not exist`);
             }
-            res.redirect ('/users/', {user});
+            res.render (`users/${user.id}`, {user});
 
         }catch ({message}) {
             res.redirect (`/error?error=${message}`);
@@ -29,7 +29,6 @@ class UsersController {
     };
 
     deleteUserById(req, res) {
-        const {id} = req.params;
         const newUsers = users.filter(value => value.id !== +req.params.id);
         res.redirect('/users', {newUsers});
     }

@@ -9,9 +9,10 @@ const apiRoutes = Router();
 apiRoutes.use('/users', usersRouter);
 apiRoutes.use('/login', loginRouter);
 apiRoutes.use('/sign', signInRouter);
+apiRoutes.use('/user', userRouter);
 
-apiRoutes.get('/error', (req, res) => {
-    res.render('error');
+apiRoutes.get('/error', ({query}, res) => {
+    res.render('error', {error: query.error});
 });
 
 apiRoutes.use((req, res)=> {

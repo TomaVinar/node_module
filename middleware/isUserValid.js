@@ -7,7 +7,6 @@ function isUserValid(req, res, next) {
         if (!firstName || !lastName || !age || !city || !email || !password) {
             throw new Error('It is necessary to fill in all fields');
         }
-
         if (firstName || lastName || age || city || email || password) {
             users.push(req.body);
         }
