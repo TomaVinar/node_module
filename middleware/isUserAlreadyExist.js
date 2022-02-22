@@ -1,21 +1,32 @@
 const users = require('../db/users');
 
-function isUserAlreadyExist(req, res, next) {
+module.exports = {
+    checkUser: (req, res, next) => {
+        try {
+            const user = users.find(value => value.id === +req.params.id);
 
-    const user = users.find(value => value.email === req.body.email);
+            if (!user) {
+                throw new Error('User with this ID is not exist');
+            }
 
-    try {
-        if (!user) {
-            throw new Error('User with this email is not exist');
+            req.user = user;
+            next();
+        } catch ({message}) {
+            res.redirect(`/error?error=${message}`);
         }
-        if (user) {
-            res.redirect(`/users/${user.id}`, {user});
-        }
-        next();
+    },
+    checkUserEmail: (req, res, next) => {
+      try {
+          const user = users.find(value => value.email === req.body.email);
 
-    } catch ({message}) {
-        res.redirect(`/error?error=${message}`);
+          if (!user) {
+              throw new Error('User with this email is not exist');
+          }
+
+          req.user = user;
+          next();
+      }catch ({message}) {
+          res.redirect(`/error?error=${message}`);
+      }
     }
 }
-
-module.exports = isUserAlreadyExist;

@@ -1,15 +1,13 @@
 const users = require('../db/users');
 
 function isUserValid(req, res, next) {
-    const {firstName, lastName, age, city, email, password} = req.body;
-
     try {
+        const {firstName, lastName, age, city, email, password} = req.body;
+
         if (!firstName || !lastName || !age || !city || !email || !password) {
             throw new Error('It is necessary to fill in all fields');
         }
-        if (firstName || lastName || age || city || email || password) {
-            users.push(req.body);
-        }
+
         next();
     }
     catch (error) {
